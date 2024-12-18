@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div class="screen active" id="homeScreen">
+            <h1 class="title">Tebak Gambar</h1>
+            <p class="subtitle">Tebak gambar secepat mungkin dan dapatkan skor tertinggi!</p>
+            
+            <div class="player-info">
+                <div class="input-group">
+                    <label for="playerName">Nama Pemain</label>
+                    <input type="text" id="playerName" placeholder="Masukkan nama Kamu">
+                </div>
+            </div>
+            
+            <button class="btn" onclick="startGame()">Mulai Permainan</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen" id="gameScreen">
+            <div class="header">
+                <div class="player-name" id="gamePlayerName"></div>
+                <div class="game-stats">
+                    <div>Skor: <span id="score" class="glowing">0</span></div>
+                    <div>Level: <span id="level" class="glowing">1</span>/10</div>
+                </div>
+            </div>
+
+            <div class="timer" id="timer">30</div>
+            
+            <div id="notification" class="notification hidden"></div>
+
+            <div class="image-container" id="imageContainer">
+                <img id="gameImage" src="" alt="Tebak gambar ini">
+            </div>
+            
+            <div class="input-container">
+                <input type="text" id="guess" placeholder="Masukkan jawaban Kamu...">
+                <button class="btn" onclick="checkAnswer()">Tebak!</button>
+            </div>
+            
+            <div id="result" class="result"></div>
+            <div id="hint" class="hint"></div>
+        </div>
+
+        <!-- Result Screen -->
+        <div class="screen" id="resultScreen">
+            <h2 class="result-title">Permainan Selesai!</h2>
+            
+            <div class="result-stats">
+                <div class="stat-item">Pemain: <span id="finalPlayerName"></span></div>
+                <div class="stat-item">Skor Akhir: <span id="finalScore"></span></div>
+                <div class="stat-item">Jawaban Benar: <span id="correctAnswers"></span></div>
+                <div class="stat-item">Waktu Total: <span id="totalTime"></span></div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn" onclick="restartGame()">Main Lagi</button>
+                <button class="btn btn-secondary" onclick="goToHome()">Menu Utama</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <audio id="correctSound" src="correct.mp3"></audio>
+    <audio id="wrongSound" src="wrong.mp3"></audio>
+    <audio id="timeUpSound" src="time-up.mp3"></audio>
+</body>
+</html>
