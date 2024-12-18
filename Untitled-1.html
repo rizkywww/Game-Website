@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #e4e4e4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Container */
+.container {
+    background: rgba(25, 25, 50, 0.9);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    max-width: 500px;
+    width: 100%;
+}
+
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Home Screen */
+        .home-screen {
+            text-align: center;
+        }
+
+        .title {
+    color: #ff4d4d; /* Warna mencolok */
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 8px rgba(255, 77, 77, 0.8);
+}
+
+        .subtitle {
+    color: #cfcfcf;
+    margin-bottom: 30px;
+}
+
+        .player-info {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            color: #4b5563;
+        }
+
+        .input-group input {
+    background: #1f1f2e;
+    color: #fff;
+    border: 2px solid #575757;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 90%; /* Perpanjang kolom input */
+    margin: 0 auto; /* Tengah */
+}
+
+        .input-group input:focus {
+    border-color: #ff4d4d;
+    outline: none;
+    background: #2d2d3a;
+}
+
+
+        /* Game Screen */
+        .game-screen {
+            text-align: center;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .player-name, #score, #level {
+    color: #6366f1;
+    font-size: 1.5rem;
+    text-shadow: 0 0 3px #4f51e2, 0 0 6px #4338ca; /* Efek glowing */
+    animation: glowAnimation 1.5s infinite alternate; /* Animasi */
+}
+
+/* Notifikasi */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0 4px 6px rgba(30, 58, 138, 0.15); /* Bayangan lebih ringan */
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.notification.success {
+    background-color: rgba(35, 173, 35, 0.8); /* Hijau lembut */
+    color: #f0fff0; /* Warna teks putih lembut */
+}
+
+.notification.error {
+    background-color: rgba(216, 99, 117, 0.8); /* Merah lembut */
+    color: #fff0f0; /* Warna teks putih lembut */
+}
+
+.notification.warning {
+    background-color: rgba(243, 174, 77, 0.8); /* Kuning lembut */
+    color: #fffaf0; /* Warna teks putih lembut */
+}
+
+
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.notification.hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+}
+
+
+.game-stats div {
+    color: #6366f1;
+    font-size: 1.2rem;
+    text-shadow: 0 0 3px #4f51e2, 0 0 6px #4338ca; /* Efek glowing */
+    animation: glowAnimation 1.5s infinite alternate; /* Animasi */
+}
+
+        .image-container {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 20px;
+            border: 3px solid #3a3a52;
+            box-shadow: 0 0 10px rgba(58, 58, 82, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(4px);
+            transition: filter 0.1s ease;
+        }
+
+        .image-container.revealed img {
+            filter: blur(0);
+        }
+
+        .timer {
+    font-size: 1.5rem;
+    color: #ff4d4d;
+    text-shadow: 0 0 5px rgba(255, 77, 77, 0.8);
+}
+        
+
+        .input-container input {
+    width: 80%; /* Lebar input */
+    margin: 0 auto; /* Tengah */
+    display: block;
+    padding: 15px 20px; /* Padding lebih besar */
+    font-size: 1.2rem; /* Ukuran font lebih besar */
+    color: #4b5563;
+    background: #f9fafb; /* Warna latar belakang */
+    border: 2px solid #e5e7eb; /* Border */
+    border-radius: 25px; /* Border melingkar */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease; /* Transisi */
+}
+
+.input-container input:focus {
+    outline: none; /* Hilangkan outline default */
+    border-color: #6366f1; /* Border saat fokus */
+    background: #eef2ff; /* Latar belakang fokus */
+    box-shadow: 0 6px 8px rgba(99, 102, 241, 0.2);
+}
+
+.input-container {
+    display: flex;
+    justify-content: center; /* Posisikan horizontal */
+    align-items: center; /* Posisikan vertikal */
+    flex-direction: column;
+    height: 100%; /* Tinggi penuh */
+    gap: 10px; /* Jarak antara input dan tombol */
+}
+
+.input-container input#guess {
+    background: #1f1f2e; /* Warna latar belakang sama seperti kolom nama */
+    color: #fff; /* Warna teks */
+    border: 2px solid #575757; /* Border */
+    padding: 12px; /* Padding serupa */
+    border-radius: 8px; /* Sudut membulat */
+    font-size: 1rem; /* Ukuran font */
+    width: 68%; /* Sama seperti kolom nama */
+    margin: 0 auto; /* Tengah */
+}
+
+.input-container input#guess:focus {
+    border-color: #ff4d4d; /* Warna fokus sama */
+    outline: none; /* Hilangkan outline default */
+    background: #2d2d3a; /* Warna saat fokus */
+}
+
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result.correct {
+    background: rgba(0, 128, 0, 0.7);
+    color: #b2fab4;
+}
+
+        .result.wrong {
+    background: rgba(128, 0, 0, 0.7);
+    color: #fab2b2;
+}
+
+        .hint {
+    margin-top: 15px;
+    color: #b7bbc344;
+    font-style: italic;
+    text-align: center;
+    font-size: 0.9rem; 
+}
+
+
+        .result-screen {
+            text-align: center;
+        }
+
+        .result-title {
+            color: #4338ca;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .result-stats {
+    background: #2d2d3a;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+.stat-item {
+    margin: 10px 0;
+    font-size: 1.2rem;
+    color: #ffffff;
+}
+
+    
+        /* Buttons */
+        .btn {
+    background: linear-gradient(135deg, #4e54c8, #565cd1); /* Gradasi biru ke ungu */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(78, 84, 200, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #3b41a1, #565cd1); /* Gradasi saat hover */
+    box-shadow: 0 6px 12px rgba(78, 84, 200, 0.5);
+}
+
+
+.btn-secondary {
+    background: linear-gradient(135deg, #2c3e50, #4e5d78); /* Gradasi abu-abu biru */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(44, 62, 80, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.btn-secondary:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #1f2a37, #3b4d66); /* Gradasi saat hover */
+    box-shadow: 0 6px 8px rgba(44, 62, 80, 0.5);
+}
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        /* Transisi Animasi Layar */
+.screen {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.screen.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Timer Bar */
+.timer-bar {
+    width: 100%;
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+#progressBar {
+    height: 100%;
+    background: #6366f1;
+    transition: width 1s linear;
+}
+
+/* Gaya Tombol Utama */
+.btn {
+    background: linear-gradient(135deg, #1e3a8a, #5b1999); /* Gradasi biru gelap ke ungu */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(30, 58, 138, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #102a5c, #6b21a8); /* Gradasi saat hover */
+    box-shadow: 0 6px 12px rgba(30, 58, 138, 0.5);
+}
+
+/* Gaya Tombol Sekunder */
+.btn-secondary {
+    background: linear-gradient(135deg, #4b5563, #2d3748); /* Gradasi abu-abu gelap */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(75, 85, 99, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.btn-secondary:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #374151, #1f2937); /* Gradasi saat hover */
+    box-shadow: 0 6px 8px rgba(75, 85, 99, 0.5);
+}
+
+.btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Animasi Skor */
+.score-animation {
+    animation: bounceIn 1s ease;
+}
+@keyframes bounceIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+@keyframes glowAnimation {
+    0% {
+        text-shadow: 0 0 3px #6366f1, 0 0 10px #4338ca;
+    }
+    100% {
+        text-shadow: 0 0 6px #6366f1, 0 0 14px #4338ca;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div class="screen active" id="homeScreen">
+            <h1 class="title">Tebak Gambar</h1>
+            <p class="subtitle">Tebak gambar secepat mungkin dan dapatkan skor tertinggi!</p>
+            
+            <div class="player-info">
+                <div class="input-group">
+                    <label for="playerName">Nama Pemain</label>
+                    <input type="text" id="playerName" placeholder="Masukkan nama Kamu">
+                </div>
+            </div>
+            
+            <button class="btn" onclick="startGame()">Mulai Permainan</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen" id="gameScreen">
+            <div class="header">
+                <div class="player-name" id="gamePlayerName"></div>
+                <div class="game-stats">
+                    <div>Skor: <span id="score" class="glowing">0</span></div>
+                    <div>Level: <span id="level" class="glowing">1</span>/10</div>
+                </div>
+            </div>
+
+            <div class="timer" id="timer">30</div>
+            
+            <div id="notification" class="notification hidden"></div>
+
+
+            <div class="image-container" id="imageContainer">
+                <img id="gameImage" src="" alt="Tebak gambar ini">
+            </div>
+            
+            <div class="input-container">
+                <input type="text" id="guess" placeholder="Masukkan jawaban Kamu...">
+                <button class="btn" onclick="checkAnswer()">Tebak!</button>
+            </div>
+            
+            <div id="result" class="result"></div>
+            <div id="hint" class="hint"></div>
+        </div>
+
+        <!-- Result Screen -->
+        <div class="screen" id="resultScreen">
+            <h2 class="result-title">Permainan Selesai!</h2>
+            
+            <div class="result-stats">
+                <div class="stat-item">Pemain: <span id="finalPlayerName"></span></div>
+                <div class="stat-item">Skor Akhir: <span id="finalScore"></span></div>
+                <div class="stat-item">Jawaban Benar: <span id="correctAnswers"></span></div>
+                <div class="stat-item">Waktu Total: <span id="totalTime"></span></div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn" onclick="restartGame()">Main Lagi</button>
+                <button class="btn btn-secondary" onclick="goToHome()">Menu Utama</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const images = [
+            {
+                url: 'assets/images/kue-cucur.jpg',
+                answer: 'kue cucur',
+                hint: 'Jajanan yang berbentuk bulat tipis dan berwarna hijau'
+            },
+            {
+                url: 'assets/images/kue-putu.jpg',
+                answer: 'kue putu',
+                hint: 'Jajanan yang berbentuk tabung dan berwarna hijau'
+            },
+            {
+                url: 'assets/images/onde-onde.jpg',
+                answer: 'onde onde',
+                hint: 'Jajanan yang berbentuk bulat dan berwarna coklat'
+            },
+            {
+                url: 'assets/images/klepon.jpg',
+                answer: 'klepon',
+                hint: 'Jajanan yang berisi gula merah'
+            },
+            {
+                url: 'assets/images/lemper.jpg', 
+                answer: 'lemper',
+                hint: 'Jajanan yang berisi ayam dan dibungkus daun pisang'
+            },
+            {
+                url: 'assets/images/nagasari.jpg',
+                answer: 'nagasari',
+                hint: 'Jajanan yang berisi pisang dan dibungkus daun pisang'
+            },
+            {
+                url: 'assets/images/papeda.jpg',
+                answer: 'papeda',
+                hint: 'Jajanan yang berasal dari Papua'
+            },
+            {
+                url: 'assets/images/pempek.jpg',
+                answer: 'pempek',
+                hint: 'Jajanan khas dari Palembang'
+            },
+            {
+                url: 'assets/images/bika-ambon.jpg',
+                answer: 'bika ambon',
+                hint: 'Jajanan khas Medan dan berongga'
+            },
+            {
+                url: 'assets/images/kue-lapis.jpg',
+                answer: 'kue lapis',
+                hint: 'Jajanan yang berwarna-warni'
+            }
+        ];
+
+        let currentImage = 0;
+        let score = 0;
+        let attempts = 0;
+        let correctAnswers = 0;
+        let gameTimer;
+        let timeLeft = 30;
+        let totalTime = 0;
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startGame() {
+            const playerName = document.getElementById('playerName').value.trim();
+            if (!playerName) {
+                alert('Silakan masukkan nama Kamu!');
+                return;
+            }
+            
+
+            document.getElementById('gamePlayerName').textContent = playerName;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('level').textContent = '1';
+            
+            score = 0;
+            currentImage = 0;
+            correctAnswers = 0;
+            totalTime = 0;
+            
+            showScreen('gameScreen');
+            loadImage();
+            startTimer();
+        }
+
+        function startTimer() {
+    timeLeft = 30; // Atur waktu awal
+    updateTimerDisplay();
+
+    const progressBar = document.getElementById('progressBar');
+    if (progressBar) {
+        progressBar.style.width = '100%';
+    }
+
+    gameTimer = setInterval(() => {
+        timeLeft--;
+        totalTime++;
+        updateTimerDisplay();
+
+        if (progressBar) {
+            progressBar.style.width = `${(timeLeft / 30) * 100}%`; // Update lebar progress bar
+        }
+
+        if (timeLeft <= 0) {
+            clearInterval(gameTimer); // Hentikan timer
+            timeOut(); // Panggil fungsi ketika waktu habis
+        }
+    }, 1000); // Interval setiap 1 detik
+}
+
+function updateTimerDisplay() {
+    const timerElement = document.getElementById('timer');
+    if (timerElement) {
+        timerElement.textContent = timeLeft; // Tampilkan waktu tersisa
+    }
+}
+
+
+function loadImage() {
+    const result = document.getElementById('result');
+    result.className = 'result';
+    result.textContent = '';
+
+    const imageContainer = document.getElementById('imageContainer');
+    const gameImage = document.getElementById('gameImage');
+    const hint = document.getElementById('hint');
+
+    imageContainer.classList.remove('revealed');
+    gameImage.src = images[currentImage].url;
+    hint.textContent = `Hint: ${images[currentImage].hint}`;
+    document.getElementById('guess').value = '';
+    document.getElementById('level').textContent = currentImage + 1;
+    attempts = 0;
+}
+
+function showNotification(message, type = "info") {
+    const notification = document.getElementById('notification');
+
+    // Atur warna notifikasi berdasarkan jenis
+    if (type === "success") {
+        notification.style.backgroundColor = "rgba(35, 173, 35, 0.8)";
+    } else if (type === "error") {
+        notification.style.backgroundColor = "rgba(216, 99, 117, 0.8)";
+    } else if (type === "warning") {
+        notification.style.backgroundColor = "rgba(243, 174, 77, 0.8)";
+    } else {
+        notification.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+    }
+
+    // Tampilkan pesan dan notifikasi
+    notification.textContent = message;
+    notification.classList.remove('hidden');
+    notification.classList.add('show');
+
+    // Sembunyikan setelah 3 detik
+    setTimeout(() => {
+        notification.classList.remove('show');
+        notification.classList.add('hidden');
+    }, 3000);
+}
+
+
+        function checkAnswer() {
+    const guess = document.getElementById('guess').value.toLowerCase().trim();
+    const result = document.getElementById('result');
+    const imageContainer = document.getElementById('imageContainer');
+    const correctSound = document.getElementById('correctSound');
+    const wrongSound = document.getElementById('wrongSound');
+
+            if (guess === images[currentImage].answer) {
+    document.getElementById('correctSound').play(); // Mainkan suara benar
+} else {
+    document.getElementById('wrongSound').play(); // Mainkan suara salah
+}
+
+if (guess === images[currentImage].answer) {
+    showNotification("Selamat jawaban Kamu benar 🎉", "success");
+    // Logika jawaban benar (seperti sebelumnya)
+} else {
+    showNotification("Yahh jawaban Kamu salah, coba lagi!", "error");
+
+    if (attempts >= 3) {
+        showNotification(`Jawaban yang benar adalah ${images[currentImage].answer}`, "warning");
+    }
+}
+
+
+            
+attempts++;
+
+if (guess === images[currentImage].answer) {
+    result.className = 'result correct';
+    result.textContent = 'Selamat Kamu Benar! 🎉';
+
+    // Perhitungan skor berdasarkan percobaan
+    if (attempts === 1) {
+        score += 10; // Jawaban benar di percobaan pertama
+    } else {
+        score += 5; // Jawaban benar di percobaan kedua atau ketiga
+    }
+
+    document.getElementById('score').textContent = score;
+    imageContainer.classList.add('revealed');
+    correctAnswers++;
+
+    clearInterval(gameTimer);
+
+    if (currentImage < images.length - 1) {
+        setTimeout(() => {
+            currentImage++;
+            loadImage();
+            startTimer();
+        }, 2000);
+    } else {
+        setTimeout(endGame, 2000);
+    }
+} else {
+    result.className = 'result wrong';
+    result.textContent = 'Yah Salah, coba lagi!';
+
+    if (attempts >= 3) {
+        imageContainer.classList.add('revealed');
+        result.textContent = `Jawaban yang benar adalah: ${images[currentImage].answer}`;
+
+        clearInterval(gameTimer);
+
+        if (currentImage < images.length - 1) {
+            setTimeout(() => {
+                currentImage++;
+                loadImage();
+                startTimer();
+            }, 2000);
+        } else {
+            setTimeout(endGame, 2000);
+        }
+    }
+}
+}
+
+function timeOut() {
+    clearInterval(gameTimer);
+
+    const result = document.getElementById('result');
+    const imageContainer = document.getElementById('imageContainer');
+    const sound = document.getElementById('timeUpSound');
+
+    if (sound) sound.play();
+
+    imageContainer.classList.add('revealed');
+    result.className = 'result wrong';
+    result.textContent = `Waktu habis! Jawabannya ${images[currentImage].answer}`;
+
+    showNotification("Waktu habis! Jawabannya " + images[currentImage].answer, "warning");
+
+    if (currentImage < images.length - 1) {
+        setTimeout(() => {
+            currentImage++;
+            loadImage();
+            startTimer();
+        }, 2000);
+    } else {
+        setTimeout(endGame, 2000);
+    }
+}
+
+
+
+
+        function endGame() {
+            clearInterval(gameTimer);
+            
+            document.getElementById('finalPlayerName').textContent = document.getElementById('playerName').value;
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('totalTime').textContent = `${Math.floor(totalTime / 60)}m ${totalTime % 60}s`;
+            document.getElementById('finalScore').classList.add('score-animation');
+
+            
+            showScreen('resultScreen');
+        }
+
+        function restartGame() {
+            currentImage = 0;
+            score = 0;
+            correctAnswers = 0;
+            totalTime = 0;
+            showScreen('gameScreen');
+            loadImage();
+            startTimer();
+        }
+
+        function goToHome() {
+            showScreen('homeScreen');
+        }
+
+        // Event listener untuk tombol Enter
+        document.getElementById('guess').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        document.getElementById('playerName').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        startGame();
+    }
+});
+
+    </script>
+
+        <audio id="correctSound" src="correct.mp3"></audio>
+        <audio id="wrongSound" src="wrong.mp3"></audio>
+        <audio id="timeUpSound" src="time-up.mp3"></audio>
+
+        
+
+</body>
+</html>
